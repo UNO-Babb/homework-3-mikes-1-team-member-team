@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Board</title>
+    <style>
+        table { border-collapse: collapse; margin: 20px auto; }
+        td { width: 40px; height: 40px; text-align: center; border: solid 1px black; cursor: pointer; }
+        .player-turn { text-align: center; margin-bottom: 20px; font-size: 24px; }
+    </style>
+</head>
+<body>
+    <h1 class="player-turn">Player {{ current_player }}'s Turn ({{ color }})</h1>
+    <form method="post" action="{{ url_for('game') }}">
+        <table>
+            {% for rowIndex in range(boardSize) %}
+                <tr>
+                    {% for colIndex in range(boardSize) %}
+                        <td style="background-color: {{ board[rowIndex][colIndex] if rowIndex < board|length and colIndex < board[rowIndex]|length else 'white' }};">
+                            {% if rowIndex < board|length and colIndex < board[rowIndex]|length and board[rowIndex][colIndex] %}
+                                <!-- Display occupied cell (non-clickable) -->
+                                &nbsp;
+                            {% else %}
+                                <!-- Only show button if cell is empty -->
+                                <button type="submit" name="row" value="{{ rowIndex }}" formaction="{{ url_for('game') }}?col={{ colIndex }}" style="width: 100%; height: 100%; border: none; background: transparent; cursor: pointer;"></button>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </form>
+</body>
+</html>

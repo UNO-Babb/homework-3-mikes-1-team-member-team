@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Over</title>
+    <style>
+        body { text-align: center; margin-top: 50px; }
+        .winner-message { font-size: 32px; margin-bottom: 20px; }
+        .tile-counts { margin-bottom: 20px; font-size: 20px; }
+        .choice-form { display: inline-block; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="winner-message">{{ winnerMessage }}</div>
+    <div class="tile-counts">
+        <p>Tile counts:</p>
+        {% for message in tileCountMessages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    <form class="choice-form" method="post" action="{{ url_for('handle_choice') }}">
+        <label>Do you want to play another game? (Y/N): </label>
+        <input type="text" name="choice" maxlength="1" required pattern="[YyNn]">
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

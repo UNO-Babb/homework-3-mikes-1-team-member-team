@@ -2,60 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hexagon Tile Game</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-        }
-        #board {
-            display: grid;
-            grid-template-columns: repeat(10, 60px);
-            grid-template-rows: repeat(10, 52px);
-            gap: 2px;
-        }
-        .hex {
-            width: 60px;
-            height: 52px;
-            background-color: lightgray;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            transition: background-color 0.2s;
-        }
-    </style>
+    <title>Game Setup</title>
 </head>
 <body>
+    <h1>Setup Your Game</h1>
+    <form method="post">
+        <label for="boardSize">Board Size (1-20):</label>
+        <input type="number" id="boardSize" name="boardSize" min="1" max="20" required><br><br>
 
-<div id="board">
-    <!-- Hexagonal tiles will be added here on clicks -->
-</div>
+        <label for="numPlayers">Number of Players (1-4):</label>
+        <input type="number" id="numPlayers" name="numPlayers" min="1" max="4" required><br><br>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // Create an empty board of hex tiles
-        for (let i = 0; i < 100; i++) {
-            const hexTile = $('<div class="hex"></div>');
-            hexTile.data("clicked", false);  // Track if a tile has been clicked
-            $('#board').append(hexTile);
-        }
+        <div id="color-selection">
+            <!-- Color selection will be dynamically generated using JavaScript when a player count is entered -->
+        </div>
 
-        // Add color to hex tiles on click
-        $('#board').on('click', '.hex', function() {
-            if (!$(this).data("clicked")) {  // Only allow one click per tile
-                $.getJSON('/add_tile', function(data) {
-                    $(this).css('background-color', data.color);
-                    $(this).data("clicked", true);  // Mark as clicked
-                }.bind(this));
+        <input type="submit" value="Start Game">
+    </form>
+
+    <script>
+        document.getElementById('numPlayers').addEventListener('input', function() {
+            const numPlayers = parseInt(this.value);
+            const colorContainer = document.getElementById('color-selection');
+            colorContainer.innerHTML = ''; // Clear existing color inputs
+
+            if (numPlayers >= 1 && numPlayers <= 4) {
+                const colors = ['red', 'blue', 'green', 'yellow'];
+                for (let i = 0; i < numPlayers; i++) {
+                    const label = document.createElement('label');
+                    label.innerHTML = `Player ${i + 1}'s Color: `;
+                    const select = document.createElement('select');
+                    select.name = `playerColor_${i + 1}`; // Unique name for each player
+                    select.required = true;
+
+                    colors.forEach(color => {
+                        const option = document.createElement('option');
+                        option.value = color;
+                        option.innerHTML = color.charAt(0).toUpperCase() + color.slice(1);
+                        select.appendChild(option);
+                    });
+
+                    colorContainer.appendChild(label);
+                    colorContainer.appendChild(select);
+                    colorContainer.appendChild(document.createElement('br'));
+                    colorContainer.appendChild(document.createElement('br'));
+                }
             }
         });
-    });
-</script>
+    </script>
 
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
 </body>
 </html>
